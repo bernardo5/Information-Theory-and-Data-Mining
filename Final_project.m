@@ -119,6 +119,45 @@ for i=1:1:size(X,2)
 end
 fprintf('The most relevant association of 3 features is %s with %s and %s with a mutual information of %f\n', getFeature(ind_3(1)), getFeature(ind_3(2)), getFeature(ind_3(3)), max_3);
 fprintf('-----------------------------------------------------------\n\n');
+
+%Compute Mutual information between four features and the class feature
+max_4=0;
+ind_4=zeros(1,4);
+for i=1:1:size(X,2)
+    for j=1:1:size(X,2)
+        for k=1:1:size(X,2)
+            for z=1:1:size(X,2)
+                if i~=j && i~=k && i~=z && j~=k && j~=z
+                    x=X(:,i);
+                    y=X(:,j);
+                    third=X(:,k);
+                    fourth=X(:,z);
+                    d=[x y third fourth Y];
+                    %get different row ocurrencies
+                    dif=unique(d, 'rows');
+                    s=size(dif);
+                    %count the number of ocurrencies of a row
+                    counts=count_ocurrencies(dif, d);
+                    %calculate joint pmf
+                    total=sum(counts);
+                    probabilities=counts./total;
+
+                    %calculation of mutual information
+                    Mutual_information_4=Mutual_Information_multi(probabilities, dif, [X(:,i) X(:,j) X(:,k) X(:,z)], Y);
+                    if max_4< Mutual_information_4
+                       max_4= Mutual_information_4;
+                       ind_4(1)=i;
+                       ind_4(2)=j;
+                       ind_4(3)=k;
+                       ind_4(4)=z;
+                    end
+                end
+            end
+        end    
+     end
+end
+fprintf('The most relevant association of 4 features is %s with %s and %s and %s with a mutual information of %f\n', getFeature(ind_4(1)), getFeature(ind_4(2)), getFeature(ind_4(3)), getFeature(ind_4(4)), max_4);
+fprintf('-----------------------------------------------------------\n\n');
 %%
 
 %-----After-----------------
