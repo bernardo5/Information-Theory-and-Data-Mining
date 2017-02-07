@@ -85,8 +85,40 @@ end
 fprintf('The most relevant association of 2 features is %s with %s with a mutual information of %f\n', getFeature(ind(1)), getFeature(ind(2)), max_2);
 fprintf('-----------------------------------------------------------\n\n');
 
+%Compute Mutual information between three features and the class feature
+max_3=0;
+ind_3=zeros(1,3);
+for i=1:1:size(X,2)
+    for j=1:1:size(X,2)
+        for k=1:1:size(X,2)
+            if i~=j && i~=k && j~=k
+                x=X(:,i);
+                y=X(:,j);
+                third=X(:,k);
+                d=[x y third Y];
+                %get different row ocurrencies
+                dif=unique(d, 'rows');
+                s=size(dif);
+                %count the number of ocurrencies of a row
+                counts=count_ocurrencies(dif, d);
+                %calculate joint pmf
+                total=sum(counts);
+                probabilities=counts./total;
 
-
+                %calculation of mutual information
+                Mutual_information_3=Mutual_Information_multi(probabilities, dif, [X(:,i) X(:,j) X(:,k)], Y);
+                if max_3< Mutual_information_3
+                   max_3= Mutual_information_3;
+                   ind_3(1)=i;
+                   ind_3(2)=j;
+                   ind_3(3)=k;
+                end
+            end
+        end    
+     end
+end
+fprintf('The most relevant association of 3 features is %s with %s and %s with a mutual information of %f\n', getFeature(ind_3(1)), getFeature(ind_3(2)), getFeature(ind_3(3)), max_3);
+fprintf('-----------------------------------------------------------\n\n');
 %%
 
 %-----After-----------------
