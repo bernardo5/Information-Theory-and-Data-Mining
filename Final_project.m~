@@ -54,7 +54,7 @@ ordered_features=sortrows(ordered_features,-2);
 disp(string_oneFeature(ordered_features));
 fprintf('--------------------------------------------------------------\n\n');
 
-%Compute Mutual information between two features and the class feature
+%Compute Mu
 
 %%
 
