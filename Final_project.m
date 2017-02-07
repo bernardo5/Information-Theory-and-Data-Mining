@@ -55,7 +55,28 @@ disp(string_oneFeature(ordered_features));
 fprintf('--------------------------------------------------------------\n\n');
 
 %Compute Mutual information between two features and the class feature
-
+Mutual_information_2=zeros(size(X,2),size(X,2));
+for i=1:1:(size(X,2)-1)
+    for j=i+1:1:size(X,2)
+        
+            x=X(:,i);
+            y=X(:,j);
+            d=[x y Y];
+            %get different row ocurrencies
+            dif=unique(d, 'rows');
+            s=size(dif);
+            %count the number of ocurrencies of a row
+            counts=count_ocurrencies(dif, d);
+            %calculate joint pmf
+            total=sum(counts);
+            probabilities=counts./total;
+            
+            %calculation of mutual information
+            Mutual_information_2(i,j)=Mutual_Information_multi(probabilities, dif, [X(:,i) X(:,j)], Y);
+            
+        
+    end
+end
 %%
 
 %-----After-----------------
