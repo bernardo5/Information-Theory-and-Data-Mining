@@ -56,6 +56,8 @@ fprintf('--------------------------------------------------------------\n\n');
 
 %Compute Mutual information between two features and the class feature
 Mutual_information_2=zeros(size(X,2),size(X,2));
+max_2=0;
+ind=zeros(1,2);
 for i=1:1:(size(X,2)-1)
     for j=i+1:1:size(X,2)
         
@@ -73,10 +75,18 @@ for i=1:1:(size(X,2)-1)
             
             %calculation of mutual information
             Mutual_information_2(i,j)=Mutual_Information_multi(probabilities, dif, [X(:,i) X(:,j)], Y);
-            
-        
+            if max_2< Mutual_information_2(i,j)
+               max_2= Mutual_information_2(i,j);
+               ind(1)=i;
+               ind(2)=j;
+            end
     end
 end
+fprintf('The most relevant association of 2 features is %s with %s with a mutual information of %f\n', getFeature(ind(1)), getFeature(ind(2)), max_2);
+fprintf('-----------------------------------------------------------\n\n');
+
+
+
 %%
 
 %-----After-----------------
