@@ -259,76 +259,38 @@ stem(a, b);
 
 title('Maximum Mutual Information between a certain number of features and the class feature')
 xlabel('Number of features correlated to the class feature');
-ylabel('Mutual INformation')
+ylabel('Mutual Information')
 %%
 
-%-----After-----------------
-% x_train = X(1:478, :); 
-% x_test = X(479:end, :);
-% y_train = Y(1:478); 
-% y_test = Y(479:end);
-% ypred = classify(x_test, x_train, y_train);
-% sum(y_test ~= ypred);
-% f=@(x_train, y_train, x_test, y_test) sum(y_test~=classify(x_test, x_train, y_train));
-% 
-% count=zeros(1,9);
-% for i=1:1:20
-%     inmodel = sequentialfs(f,X,Y);
-%     count=count+inmodel;
-% end
-% Final_inmodel=count>15;
-% [string, columns]=SpecifyFeatures(Final_inmodel);
-% disp(string);
-% 
-% X_meaningfull=X(:, columns);
-% 
-% %Inicialization of COOLCAT
-% dif=unique(X_meaningfull, 'rows');
-% %count the number of ocurrencies of a row
-% counts=count_ocurrencies(dif, X_meaningfull);
-% %calculate pmf
-% total=sum(counts);
-% probabilities=counts./total;            
-% %get row indexes of starting points for cluster
-% cluster_rows=estimate_two_clusters(dif, probabilities);
-% 
-% %initialize the clusters
-% Cluster_1=dif(cluster_rows(1), :);
-% Cluster_1_probabilities(1)=probabilities(cluster_rows(1));
-% 
-% Cluster_2=dif(cluster_rows(2), :);
-% Cluster_2_probabilities(1)=probabilities(cluster_rows(2));
-% %delete rows from the unprocessed points
-% dif([cluster_rows(1) cluster_rows(2)], :)=[];
-% probabilities([cluster_rows(1) cluster_rows(2)])=[];
-% 
-% %Select which cluster data should join
-% while isempty(probabilities)==0
-%     Cluster_1_probabilities=[probabilities(1) Cluster_1_probabilities];
-%     Cluster_2_probabilities=[probabilities(1) Cluster_2_probabilities];
-%     H1=entropy(Cluster_1_probabilities,2);
-%     H2=entropy(Cluster_2_probabilities,2);
-%     if H1<H2 %P1 belongs to cluster 1
-%         Cluster_2_probabilities(1)=[];
-%         Cluster_1=[dif(1, :);Cluster_1];
-%         dif(1, :)=[];
-%         probabilities(1)=[];
-%     else %P1 belongs to cluster 2
-%         Cluster_1_probabilities(1)=[];
-%         Cluster_2=[dif(1, :);Cluster_2];
-%         dif(1, :)=[];
-%         probabilities(1)=[];
-%     end
-% 
-% end
-% 
-% 
-% %Evaluate clusters
-% c1= data_BreastCancer(:, 11)==2;
-% c2=data_BreastCancer(:,11)==4;
-% true_cluster1=data_BreastCancer(c1,:);
-% true_cluster1=true_cluster1(:,columns+1);
-% true_cluster1=unique(true_cluster1, 'rows');
-% true_cluster2=data_BreastCancer(c2,:);
-% true_cluster2=true_cluster2(:,columns+1);
-% true_cluster2=unique(true_cluster2, 'rows');
+%-----Testing the results through the Cluster formation-----------------
+fprintf('Through the previously obtaind graph, we can select only the following 3 features: %s, %s and %s to be correlated with the class feature\n\n', getFeature(ind_3(1)),getFeature(ind_3(2)),getFeature(ind_3(3)))
+
+X_meaningfull=X(:, [ind_3(1) ind_3(2) ind_3(3)]);
+
+%Inicialization of COOLCAT
+dif=unique(X_meaningfull, 'rows');
+%count the number of ocurrencies of a row
+counts=count_ocurrencies(dif, X_meaningfull);
+%calculate pmf
+total=sum(counts);
+probabilities=counts./total; 
+
+
+%separate data matrix into two random clusters
+
+Cluster_1=dif(1:(size(dif,1)/2), :);
+
+Cluster_2=dif(((size(dif,1)/2)+1):end, :);
+
+
+
+%%
+%Evaluate clusters
+c1= data_BreastCancer(:, 11)==2;
+c2=data_BreastCancer(:,11)==4;
+true_cluster1=data_BreastCancer(c1,:);
+true_cluster1=true_cluster1(:,columns+1);
+true_cluster1=unique(true_cluster1, 'rows');
+true_cluster2=data_BreastCancer(c2,:);
+true_cluster2=true_cluster2(:,columns+1);
+true_cluster2=unique(true_cluster2, 'rows');
