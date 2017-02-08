@@ -275,14 +275,80 @@ Cluster_1_entropy=Calc_Cluster_Entropy( Cluster_1 )
 Cluster_2=X_meaningfull(((((size(X_meaningfull,1)+1)/2))+1):end, :);
 Cluster_2_entropy=Calc_Cluster_Entropy( Cluster_2 )
 
+%perform change in rows according to variance in cluster entropy
+row_1_change=10;
+row_2_change=20;
+%while the biggest variation of entropy is significant, keep changing rows
+while (row_1_change~=0) && (row_2_change~=0)
+    %in each cicle change a row in each cluster
+    row_1_change=0;
+    lowest_1_entropy=1000;
+    Cluster_1_entropy=Calc_Cluster_Entropy( Cluster_1 );
+    
+    row_2_change=0;
+    lowest_2_entropy=1000;
+    Cluster_2_entropy=Calc_Cluster_Entropy( Cluster_1 );
+    
+    %evaluate the row that lowers the most the entropy of the cluster 1
+    for i=1:1:size(Cluster_1,1) %for each row compute the entropy of the cluster without the row
+        Cluster_1_prov=Cluster_1;
+        Cluster_1_prov(i,:)=[];
+        Cluster_1_entropy_prov=Calc_Cluster_Entropy( Cluster_1_prov );
+        
+        if (Cluster_1_entropy_prov<Cluster_1_entropy) && (Cluster_1_entropy_prov<lowest_1_entropy) && ((Cluster_1_entropy_prov/Cluster_1_entropy)>0.1)
+            lowest_1_entropy=Cluster_1_entropy_prov;
+            row_1_change=i;
+        end
+    end
+    if row_1_change~=0 %a row was found in the specified conditions
+        %delete the row to move
+        row_to_move=Cluster_1(row_1_change,:);
+        Cluster_1(row_1_change,:)=[];
+        %update the entropy of the cluster
+        Cluster_1_entropy=Calc_Cluster_Entropy( Cluster_1 );
+        %move the row to cluster 2
+        Cluster_2=[Cluster_2;row_to_move];
+    end
+    
+    
+    %--------------------------------------------------------------------
+    %same process for cluster 2
+    
+     %evaluate the row that lowers the most the entropy of the cluster 2
+    for i=1:1:size(Cluster_2,1) %for each row compute the entropy of the cluster without the row
+        Cluster_2_prov=Cluster_2;
+        Cluster_2_prov(i,:)=[];
+        Cluster_2_entropy_prov=Calc_Cluster_Entropy( Cluster_2_prov );
+        
+        if (Cluster_2_entropy_prov<Cluster_2_entropy) && (Cluster_2_entropy_prov<lowest_2_entropy) && ((Cluster_2_entropy_prov/Cluster_2_entropy)>0.1)
+            lowest_2_entropy=Cluster_2_entropy_prov;
+            row_2_change=i;
+        end
+    end
+    if row_2_change~=0 %a row was found in the specified conditions
+        %delete the row to move
+        row_to_move=Cluster_2(row_2_change,:);
+        Cluster_2(row_2_change,:)=[];
+        %update the entropy of the cluster
+        Cluster_2_entropy=Calc_Cluster_Entropy( Cluster_2 );
+        %move the row to cluster 1
+        Cluster_1=[Cluster_1;row_to_move];
+    end
+    Cluster_1_entropy
+    Cluster_2_entropy
+    
+    row_1_change
+    row_2_change
+end
+
 
 %%
-%Evaluate clusters
-c1= data_BreastCancer(:, 11)==2;
-c2=data_BreastCancer(:,11)==4;
-true_cluster1=data_BreastCancer(c1,:);
-true_cluster1=true_cluster1(:,columns+1);
-true_cluster1=unique(true_cluster1, 'rows');
-true_cluster2=data_BreastCancer(c2,:);
-true_cluster2=true_cluster2(:,columns+1);
-true_cluster2=unique(true_cluster2, 'rows');
+% %Evaluate clusters
+% c1= data_BreastCancer(:, 11)==2;
+% c2=data_BreastCancer(:,11)==4;
+% true_cluster1=data_BreastCancer(c1,:);
+% true_cluster1=true_cluster1(:,columns+1);
+% true_cluster1=unique(true_cluster1, 'rows');
+% true_cluster2=data_BreastCancer(c2,:);
+% true_cluster2=true_cluster2(:,columns+1);
+% true_cluster2=unique(true_cluster2, 'rows');
