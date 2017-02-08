@@ -202,9 +202,67 @@ for i=1:1:(size(X,2)-4)
 end
 fprintf('The most relevant association of 5 features is %s with %s and %s and %s and %s with a mutual information of %f\n', getFeature(ind_5(1)), getFeature(ind_5(2)), getFeature(ind_5(3)), getFeature(ind_5(4)), getFeature(ind_5(5)), max_5);
 fprintf('-----------------------------------------------------------\n\n');
+
+
+%Compute Mutual information between six features and the class feature
+max_6=0;
+ind_6=zeros(1,6);
+for i=1:1:(size(X,2)-5)
+    for j=i+1:1:(size(X,2)-4)
+        for k=j+1:1:(size(X,2)-3)
+            for z=k+1:1:(size(X,2)-2)
+                for q=z+1:1:(size(X,2)-1)
+                    for g=q+1:1:size(X,2)
+                        if i~=j && i~=k && i~=z && i~=q && i~=g && j~=k && j~=z && j~= q && j~=g && z~=q && z~=g && q~=g
+                            x=X(:,i);
+                            y=X(:,j);
+                            third=X(:,k);
+                            fourth=X(:,z);
+                            fifth=X(:,q);
+                            sixth=X(:,g);
+                            d=[x y third fourth fifth sixth Y];
+                            %get different row ocurrencies
+                            dif=unique(d, 'rows');
+                            s=size(dif);
+                            %count the number of ocurrencies of a row
+                            counts=count_ocurrencies(dif, d);
+                            %calculate joint pmf
+                            total=sum(counts);
+                            probabilities=counts./total;
+
+                            %calculation of mutual information
+                            Mutual_information_6=Mutual_Information_multi(probabilities, dif, [X(:,i) X(:,j) X(:,k) X(:,z) X(:,q) X(:,g)], Y);
+                            if max_6< Mutual_information_6
+                               max_6= Mutual_information_6;
+                               ind_6(1)=i;
+                               ind_6(2)=j;
+                               ind_6(3)=k;
+                               ind_6(4)=z;
+                               ind_6(5)=q;
+                               ind_6(6)=g;
+                            end
+                        end
+                    end
+                end
+            end
+        end    
+     end
+end
+fprintf('The most relevant association of 6 features is %s with %s and %s and %s and %s and %s with a mutual information of %f\n', getFeature(ind_6(1)), getFeature(ind_6(2)), getFeature(ind_6(3)), getFeature(ind_6(4)), getFeature(ind_6(5)), getFeature(ind_6(6)), max_6);
+fprintf('-----------------------------------------------------------\n\n');
+
+%%
+%Plot mutual information vs number of combinated features
+a=[1; 2; 3; 4; 5; 6];
+b=[ordered_features(1,2); max_2; max_3; max_4; max_5; max_6];
+stem(a, b);
+
+title('Maximum Mutual Information between a certain number of features and the class feature')
+xlabel('Number of features correlated to the class feature');
+ylabel('Mutual Information')
 %%
 
-%-----After-----------------
+%-----Testing the results through the Cluster formation-----------------
 % x_train = X(1:478, :); 
 % x_test = X(479:end, :);
 % y_train = Y(1:478); 
