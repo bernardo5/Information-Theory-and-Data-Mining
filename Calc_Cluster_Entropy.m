@@ -1,12 +1,9 @@
 function [ cluster_entropy ] = Calc_Cluster_Entropy( cluster )
 %based on the cluster matrix determines its entropy
 
-dif=unique(cluster, 'rows');
-%count the number of ocurrencies of a row
-counts=count_ocurrencies(dif, cluster);
 %calculate pmf
-total=sum(counts);
-probabilities=counts./total; 
+total=sum(cluster(:,size(cluster,2)));
+probabilities=cluster(:,size(cluster,2))./total; 
 
 cluster_entropy=entropy(probabilities,2);
 

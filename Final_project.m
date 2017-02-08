@@ -269,17 +269,25 @@ X_meaningfull=X(:, [ind_3(1) ind_3(2) ind_3(3)]);
 
 %separate data matrix into two random clusters
 
-Cluster_1=X_meaningfull(1:(((size(X_meaningfull,1)+1)/2)), :);
+Cluster=X_meaningfull;
+dif=unique(X_meaningfull, 'rows');
+%count the number of ocurrencies of a row
+counts=count_ocurrencies(dif, Cluster);
+Cluster=[dif counts];
+
+Cluster_1=Cluster(1:(size(Cluster,1)/2),:);
+
 Cluster_1_entropy=Calc_Cluster_Entropy( Cluster_1 )
 
-Cluster_2=X_meaningfull(((((size(X_meaningfull,1)+1)/2))+1):end, :);
+Cluster_2=Cluster(((((size(Cluster,1))/2))+1):end, :);
+
 Cluster_2_entropy=Calc_Cluster_Entropy( Cluster_2 )
 
 %perform change in rows according to variance in cluster entropy
 row_1_change=10;
 row_2_change=20;
 %while the biggest variation of entropy is significant, keep changing rows
-while (row_1_change~=0) && (row_2_change~=0)
+while ~((row_1_change==0) && (row_2_change==0))
     %in each cicle change a row in each cluster
     row_1_change=0;
     lowest_1_entropy=1000;
@@ -320,7 +328,7 @@ while (row_1_change~=0) && (row_2_change~=0)
         Cluster_2_prov(i,:)=[];
         Cluster_2_entropy_prov=Calc_Cluster_Entropy( Cluster_2_prov );
         
-        if (Cluster_2_entropy_prov<Cluster_2_entropy) && (Cluster_2_entropy_prov<lowest_2_entropy) && ((Cluster_2_entropy_prov/Cluster_2_entropy)>0.1)
+        if (Cluster_2_entropy_prov<Cluster_2_entropy) && (Cluster_2_entropy_prov<lowest_2_entropy) && ((Cluster_2_entropy_prov/Cluster_2_entropy)>0.15)
             lowest_2_entropy=Cluster_2_entropy_prov;
             row_2_change=i;
         end
@@ -343,12 +351,12 @@ end
 
 
 %%
-% %Evaluate clusters
-% c1= data_BreastCancer(:, 11)==2;
-% c2=data_BreastCancer(:,11)==4;
-% true_cluster1=data_BreastCancer(c1,:);
-% true_cluster1=true_cluster1(:,columns+1);
-% true_cluster1=unique(true_cluster1, 'rows');
-% true_cluster2=data_BreastCancer(c2,:);
-% true_cluster2=true_cluster2(:,columns+1);
-% true_cluster2=unique(true_cluster2, 'rows');
+%Evaluate clusters
+c1= data_BreastCancer(:, 11)==2;
+c2=data_BreastCancer(:,11)==4;
+true_cluster1=data_BreastCancer(c1,:);
+true_cluster1=true_cluster1(:,[ind_3(1) ind_3(2) ind_3(3)]+1);
+true_cluster1=unique(true_cluster1, 'rows');
+true_cluster2=data_BreastCancer(c2,:);
+true_cluster2=true_cluster2(:,[ind_3(1) ind_3(2) ind_3(3)]+1);
+true_cluster2=unique(true_cluster2, 'rows');

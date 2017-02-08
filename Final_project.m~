@@ -269,10 +269,22 @@ X_meaningfull=X(:, [ind_3(1) ind_3(2) ind_3(3)]);
 
 %separate data matrix into two random clusters
 
-Cluster_1=X_meaningfull(1:(((size(X_meaningfull,1)+1)/2)), :);
+Cluster=X_meaningfull(1:(((size(X_meaningfull,1)+1)/2)), :);
+dif=unique(X_meaningfull, 'rows');
+%count the number of ocurrencies of a row
+counts=count_ocurrencies(dif, Cluster);
+
+Cluster_1=[dif counts];
+
 Cluster_1_entropy=Calc_Cluster_Entropy( Cluster_1 )
 
-Cluster_2=X_meaningfull(((((size(X_meaningfull,1)+1)/2))+1):end, :);
+Cluster=X_meaningfull(((((size(X_meaningfull,1)+1)/2))+1):end, :);
+dif=unique(Cluster, 'rows');
+%count the number of ocurrencies of a row
+counts=count_ocurrencies(dif, Cluster);
+
+Cluster_2=[dif counts];
+
 Cluster_2_entropy=Calc_Cluster_Entropy( Cluster_2 )
 
 %perform change in rows according to variance in cluster entropy
@@ -295,7 +307,7 @@ while (row_1_change~=0) && (row_2_change~=0)
         Cluster_1_prov(i,:)=[];
         Cluster_1_entropy_prov=Calc_Cluster_Entropy( Cluster_1_prov );
         
-        if (Cluster_1_entropy_prov<Cluster_1_entropy) && (Cluster_1_entropy_prov<lowest_1_entropy) && (abs(Cluster_1_entropy-Cluster_1_entropy_prov)>0.09)
+        if (Cluster_1_entropy_prov<Cluster_1_entropy) && (Cluster_1_entropy_prov<lowest_1_entropy) && ((Cluster_1_entropy_prov/Cluster_1_entropy)>0.1)
             lowest_1_entropy=Cluster_1_entropy_prov;
             row_1_change=i;
         end
@@ -307,7 +319,7 @@ while (row_1_change~=0) && (row_2_change~=0)
         %update the entropy of the cluster
         Cluster_1_entropy=Calc_Cluster_Entropy( Cluster_1 );
         %move the row to cluster 2
-        Cluster_2=[row_to_move;Cluster_2];
+        Cluster_2=[Cluster_2;row_to_move];
     end
     
     
@@ -320,7 +332,7 @@ while (row_1_change~=0) && (row_2_change~=0)
         Cluster_2_prov(i,:)=[];
         Cluster_2_entropy_prov=Calc_Cluster_Entropy( Cluster_2_prov );
         
-        if (Cluster_2_entropy_prov<Cluster_2_entropy) && (Cluster_2_entropy_prov<lowest_2_entropy) && (abs(Cluster_2_entropy-Cluster_2_entropy_prov)>0.01)
+        if (Cluster_2_entropy_prov<Cluster_2_entropy) && (Cluster_2_entropy_prov<lowest_2_entropy) && ((Cluster_2_entropy_prov/Cluster_2_entropy)>0.1)
             lowest_2_entropy=Cluster_2_entropy_prov;
             row_2_change=i;
         end
@@ -332,9 +344,13 @@ while (row_1_change~=0) && (row_2_change~=0)
         %update the entropy of the cluster
         Cluster_2_entropy=Calc_Cluster_Entropy( Cluster_2 );
         %move the row to cluster 1
-        Cluster_1=[row_to_move;Cluster_1];
+        Cluster_1=[Cluster_1;row_to_move];
     end
+    Cluster_1_entropy
+    Cluster_2_entropy
     
+    row_1_change
+    row_2_change
 end
 
 
