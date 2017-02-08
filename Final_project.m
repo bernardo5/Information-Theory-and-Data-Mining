@@ -26,10 +26,10 @@ for i=1:1:size(X,2)
     probabilities=a./total;
     H(i)=entropy(probabilities,2);
     fprintf( 'The entropy of %s is %f\n', getFeature(i), H(i));
-    figure
-    stem(b,probabilities)
-    title(['Probability mass function of ', getFeature(i)])
-    ylabel('probability')
+%     figure
+%     stem(b,probabilities)
+%     title(['Probability mass function of ', getFeature(i)])
+%     ylabel('probability')
 end
 fprintf( '-------------------------------------------------------------\n\n');
 
