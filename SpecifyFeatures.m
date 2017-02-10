@@ -2,7 +2,7 @@ function [ outArray, indexes ] = SpecifyFeatures( inArray )
 %Based on the logical input array tells the user which features were
 %selected
 
-string='The selected features are: ';
+string='Through the Matlab built in function, the selected features are: ';
 j=1;
 for i=1:1:size(inArray,2)
     if inArray(i)==1

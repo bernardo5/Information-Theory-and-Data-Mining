@@ -262,6 +262,29 @@ xlabel('Number of features correlated to the class feature');
 ylabel('Mutual Information')
 
 fprintf('Through the previously obtaind graph, we can select only the following 3 features: %s, %s and %s to be correlated with the class feature\n\n', getFeature(ind_3(1)),getFeature(ind_3(2)),getFeature(ind_3(3)))
+
+%%
+%Confirmation of the results through Matlab System Functions
+X=data_BreastCancer(:, 2:10);
+Y=data_BreastCancer(:, 11);
+
+x_train = X(1:478, :); 
+x_test = X(479:end, :);
+y_train = Y(1:478); 
+y_test = Y(479:end);
+ypred = classify(x_test, x_train, y_train);
+sum(y_test ~= ypred);
+f=@(x_train, y_train, x_test, y_test) sum(y_test~=classify(x_test, x_train, y_train));
+
+count=zeros(1,9);
+for i=1:1:20
+    inmodel = sequentialfs(f,X,Y);
+    count=count+inmodel;
+end
+Final_inmodel=count>15;
+[string, columns]=SpecifyFeatures(Final_inmodel);
+disp(string);
+
 %%
 
 %Decision tree with 3 variables
@@ -280,6 +303,13 @@ errors=nnz(ynew-Y)
 
 %Decision tree with 4 variables
 X_meaningfull=data_BreastCancer(:, [ind_4(1) ind_4(2) ind_4(3) ind_4(4)]);
+Y=data_BreastCancer(:, 11);
+ctree=fitctree(X_meaningfull, Y);
+ynew=predict(ctree, X_meaningfull);
+errors=nnz(ynew-Y)
+
+%Decision tree with 5 variables
+X_meaningfull=data_BreastCancer(:, [ind_5(1) ind_5(2) ind_5(3) ind_5(4) ind_5(5)]);
 Y=data_BreastCancer(:, 11);
 ctree=fitctree(X_meaningfull, Y);
 ynew=predict(ctree, X_meaningfull);
