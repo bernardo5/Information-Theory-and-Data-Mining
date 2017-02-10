@@ -265,14 +265,27 @@ fprintf('Through the previously obtaind graph, we can select only the following 
 %%
 
 %Decision tree
-X_meaningfull=X(:, [ind_3(1) ind_3(2) ind_3(3)]);
+X_meaningfull=data_BreastCancer(:, [ind_3(1) ind_3(2) ind_3(3)]);
 Y=data_BreastCancer(:, 11);
 
-t = fitctree(X_meaningfull, Y,'Prune','off');
-view(t, 'mode','graph')
+% t = fitctree(X_meaningfull, Y,'Prune','off');
+% view(t, 'mode','graph')
+% 
+% y_hat = predict(t, X_meaningfull);
+% cm = confusionmat(Y,y_hat);
+% 
+% N = sum(cm(:))
+% err1 = ( N-sum(diag(cm)) ) / N
 
-y_hat = predict(t, X_meaningfull);
-cm = confusionmat(Y,y_hat);
+% ctree=ClassificationTree.fit(X_meaningfull, Y);
+% 
+% ctree(X_meaningfull)
+
+ctree=fitctree(X_meaningfull, Y);
+ynew=predict(ctree, X_meaningfull);
+
+errors=nnz(ynew-Y)
+
 %%
 % %-----Testing the results through the Cluster formation-----------------
 % 
