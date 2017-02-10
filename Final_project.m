@@ -264,26 +264,25 @@ ylabel('Mutual Information')
 fprintf('Through the previously obtaind graph, we can select only the following 3 features: %s, %s and %s to be correlated with the class feature\n\n', getFeature(ind_3(1)),getFeature(ind_3(2)),getFeature(ind_3(3)))
 %%
 
-%Decision tree
+%Decision tree with 3 variables
 X_meaningfull=data_BreastCancer(:, [ind_3(1) ind_3(2) ind_3(3)]);
 Y=data_BreastCancer(:, 11);
-
-% t = fitctree(X_meaningfull, Y,'Prune','off');
-% view(t, 'mode','graph')
-% 
-% y_hat = predict(t, X_meaningfull);
-% cm = confusionmat(Y,y_hat);
-% 
-% N = sum(cm(:))
-% err1 = ( N-sum(diag(cm)) ) / N
-
-% ctree=ClassificationTree.fit(X_meaningfull, Y);
-% 
-% ctree(X_meaningfull)
-
 ctree=fitctree(X_meaningfull, Y);
 ynew=predict(ctree, X_meaningfull);
+errors=nnz(ynew-Y)
 
+%Decision tree with 2 variables
+X_meaningfull=data_BreastCancer(:, [ind(1) ind(2)]);
+Y=data_BreastCancer(:, 11);
+ctree=fitctree(X_meaningfull, Y);
+ynew=predict(ctree, X_meaningfull);
+errors=nnz(ynew-Y)
+
+%Decision tree with 4 variables
+X_meaningfull=data_BreastCancer(:, [ind_4(1) ind_4(2) ind_4(3) ind_4(4)]);
+Y=data_BreastCancer(:, 11);
+ctree=fitctree(X_meaningfull, Y);
+ynew=predict(ctree, X_meaningfull);
 errors=nnz(ynew-Y)
 
 %%
