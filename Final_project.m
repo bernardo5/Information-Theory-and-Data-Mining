@@ -285,132 +285,48 @@ Final_inmodel=count>15;
 [string, columns]=SpecifyFeatures(Final_inmodel);
 disp(string);
 
-%%
 
-%Decision tree with 3 variables
-X_meaningfull=data_BreastCancer(:, [ind_3(1) ind_3(2) ind_3(3)]);
-Y=data_BreastCancer(:, 11);
-ctree=fitctree(X_meaningfull, Y);
-ynew=predict(ctree, X_meaningfull);
-errors=nnz(ynew-Y)
+
+
+
+
+%%
+fprintf('-------------------------------------------------------------\n\n');
 
 %Decision tree with 2 variables
 X_meaningfull=data_BreastCancer(:, [ind(1) ind(2)]);
 Y=data_BreastCancer(:, 11);
 ctree=fitctree(X_meaningfull, Y);
 ynew=predict(ctree, X_meaningfull);
-errors=nnz(ynew-Y)
+errors=nnz(ynew-Y);
+
+fprintf('The number of classification errors using 2 variables is %d \n\n', errors);
+
+%Decision tree with 3 variables
+X_meaningfull=data_BreastCancer(:, [ind_3(1) ind_3(2) ind_3(3)]);
+Y=data_BreastCancer(:, 11);
+ctree=fitctree(X_meaningfull, Y);
+ynew=predict(ctree, X_meaningfull);
+errors=nnz(ynew-Y);
+view(ctree, 'mode', 'graph')
+
+fprintf('The number of classification errors using 3 variables is %d \n\n', errors);
 
 %Decision tree with 4 variables
 X_meaningfull=data_BreastCancer(:, [ind_4(1) ind_4(2) ind_4(3) ind_4(4)]);
 Y=data_BreastCancer(:, 11);
 ctree=fitctree(X_meaningfull, Y);
 ynew=predict(ctree, X_meaningfull);
-errors=nnz(ynew-Y)
+errors=nnz(ynew-Y);
+
+fprintf('The number of classification errors using 4 variables is %d \n\n', errors);
 
 %Decision tree with 5 variables
 X_meaningfull=data_BreastCancer(:, [ind_5(1) ind_5(2) ind_5(3) ind_5(4) ind_5(5)]);
 Y=data_BreastCancer(:, 11);
 ctree=fitctree(X_meaningfull, Y);
 ynew=predict(ctree, X_meaningfull);
-errors=nnz(ynew-Y)
+errors=nnz(ynew-Y);
 
-%%
-% %-----Testing the results through the Cluster formation-----------------
-% 
-% 
-% X_meaningfull=X(:, [ind_3(1) ind_3(2) ind_3(3)]);
-% 
-% %separate data matrix into two random clusters
-% 
-% Cluster=X_meaningfull;
-% dif=unique(X_meaningfull, 'rows');
-% %count the number of ocurrencies of a row
-% counts=count_ocurrencies(dif, Cluster);
-% Cluster=[dif counts];
-% 
-% Cluster_1=Cluster(1:(size(Cluster,1)/2),:);
-% 
-% Cluster_1_entropy=Calc_Cluster_Entropy( Cluster_1 )
-% 
-% Cluster_2=Cluster(((((size(Cluster,1))/2))+1):end, :);
-% 
-% Cluster_2_entropy=Calc_Cluster_Entropy( Cluster_2 )
-% 
-% %perform change in rows according to variance in cluster entropy
-% row_1_change=10;
-% row_2_change=10;
-% %while the biggest variation of entropy is significant, keep changing rows
-% while ~((row_1_change==0) && (row_2_change==0))
-%     %in each cicle change a row in each cluster
-%     row_1_change=0;
-%     lowest_1_entropy=1000;
-%     Cluster_1_entropy=Calc_Cluster_Entropy( Cluster_1 );
-%     
-%     row_2_change=0;
-%     lowest_2_entropy=1000;
-%     Cluster_2_entropy=Calc_Cluster_Entropy( Cluster_1 );
-%     
-%     %evaluate the row that lowers the most the entropy of the cluster 1
-%     for i=1:1:size(Cluster_1,1) %for each row compute the entropy of the cluster without the row
-%         Cluster_1_prov=Cluster_1;
-%         Cluster_1_prov(i,:)=[];
-%         Cluster_1_entropy_prov=Calc_Cluster_Entropy( Cluster_1_prov );
-%         
-%         if (Cluster_1_entropy_prov<Cluster_1_entropy) && (Cluster_1_entropy_prov<lowest_1_entropy) && ((Cluster_1_entropy_prov/Cluster_1_entropy)>0.15)
-%             lowest_1_entropy=Cluster_1_entropy_prov;
-%             row_1_change=i; 
-%         end
-%     end
-%     if row_1_change~=0 %a row was found in the specified conditions
-%         %delete the row to move
-%         row_to_move=Cluster_1(row_1_change,:);
-%         Cluster_1(row_1_change,:)=[];
-%         %update the entropy of the cluster
-%         Cluster_1_entropy=Calc_Cluster_Entropy( Cluster_1 );
-%         %move the row to cluster 2
-%         Cluster_2=[Cluster_2;row_to_move];
-%     end
-%     
-%     
-%     %--------------------------------------------------------------------
-%     %same process for cluster 2
-%     
-%      %evaluate the row that lowers the most the entropy of the cluster 2
-%     for i=1:1:size(Cluster_2,1) %for each row compute the entropy of the cluster without the row
-%         Cluster_2_prov=Cluster_2;
-%         Cluster_2_prov(i,:)=[];
-%         Cluster_2_entropy_prov=Calc_Cluster_Entropy( Cluster_2_prov );
-%         
-%         if (Cluster_2_entropy_prov<Cluster_2_entropy) && (Cluster_2_entropy_prov<lowest_2_entropy) && ((Cluster_2_entropy_prov/Cluster_2_entropy)>0.15)
-%             lowest_2_entropy=Cluster_2_entropy_prov;
-%             row_2_change=i;
-%         end
-%     end
-%     if row_2_change~=0 %a row was found in the specified conditions
-%         %delete the row to move
-%         row_to_move=Cluster_2(row_2_change,:);
-%         Cluster_2(row_2_change,:)=[];
-%         %update the entropy of the cluster
-%         Cluster_2_entropy=Calc_Cluster_Entropy( Cluster_2 );
-%         %move the row to cluster 1
-%         Cluster_1=[Cluster_1;row_to_move];
-%     end
-%     Cluster_1_entropy
-%     Cluster_2_entropy
-%     
-%     row_1_change
-%     row_2_change
-% end
-% 
-% 
-% %%
-% %Evaluate clusters
-% c1= data_BreastCancer(:, 11)==2;
-% c2=data_BreastCancer(:,11)==4;
-% true_cluster1=data_BreastCancer(c1,:);
-% true_cluster1=true_cluster1(:,[ind_3(1) ind_3(2) ind_3(3)]+1);
-% true_cluster1=unique(true_cluster1, 'rows');
-% true_cluster2=data_BreastCancer(c2,:);
-% true_cluster2=true_cluster2(:,[ind_3(1) ind_3(2) ind_3(3)]+1);
-% true_cluster2=unique(true_cluster2, 'rows');
+fprintf('The number of classification errors using 5 variables is %d \n\n', errors);
+
